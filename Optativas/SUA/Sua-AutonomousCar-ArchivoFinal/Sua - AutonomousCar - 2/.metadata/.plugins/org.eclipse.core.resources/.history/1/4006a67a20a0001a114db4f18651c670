@@ -1,0 +1,92 @@
+package autonomouscar.humansensors.monitor;
+
+import java.util.Dictionary;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+import sua.autonomouscar.driving.interfaces.IDrivingService;
+import sua.autonomouscar.driving.interfaces.IL0_ManualDriving;
+import sua.autonomouscar.infrastructure.OSGiUtils;
+import sua.autonomouscar.infrastructure.Thing;
+import sua.autonomouscar.infrastructure.devices.HandsOnWheelSensor;
+import sua.autonomouscar.infrastructure.devices.Steering;
+import sua.autonomouscar.infrastructure.driving.DrivingService;
+import sua.autonomouscar.infrastructure.driving.L2_DrivingService;
+import sua.autonomouscar.infrastructure.interaction.InteractionMechanism;
+import sua.autonomouscar.infrastructure.interaction.NotificationService;
+import sua.autonomouscar.interfaces.EDrivingMode;
+import sua.autonomouscar.interfaces.ERoadType;
+import sua.autonomouscar.simulation.console.commands.L0_ManualDrivingConfigurator;
+import sua.autonomouscar.simulation.console.commands.L1_AssistedDrivingConfigurator;
+import sua.autonomouscar.simulation.console.commands.L2_AdaptiveCruiseControlConfigurator;
+import sua.autonomouscar.simulation.console.commands.L2_LaneKeepingAssistConfigurator;
+import sua.autonomouscar.simulation.console.commands.L3_CityChaufferConfigurator;
+import sua.autonomouscar.simulation.console.commands.L3_HighwayChaufferConfigurator;
+import sua.autonomouscar.simulation.console.commands.L3_TrafficJamChaufferConfigurator;
+import sua.autonomouscar.simulation.console.commands.ParkInTheRoadShoulderFallbackPlanConfigurator;
+import sua.autonomouscar.simulation.console.commands.EmergencyFallbackPlanConfigurator;
+import sua.autonomouscar.simulation.console.commands.L0_ManualDrivingConfigurator;
+
+import sua.autonomouscar.devices.interfaces.IFaceMonitor;
+import sua.autonomouscar.devices.interfaces.IHandsOnWheelSensor;
+import sua.autonomouscar.devices.interfaces.IHumanSensors;
+import sua.autonomouscar.devices.interfaces.ISeatSensor;
+import sua.autonomouscar.interfaces.IIdentifiable;
+
+import sua.autonomouscar.interaction.*;
+
+
+
+public class HumanSensors implements ServiceListener  {
+	
+	private BundleContext context; 
+	private ERoadType previousType = null; 
+
+	private IDrivingService driving; 
+	private IFaceMonitor face;
+	private ISeatSensor seat;
+	private IHumanSensors hs;
+	
+	
+	public HumanSensors(BundleContext bundleContext) {
+		this.context = bundleContext;	
+	}
+
+	@Override
+	public void serviceChanged(ServiceEvent event) {
+		// TODO Auto-generated method stub
+		ServiceReference ref = event.getServiceReference();
+		
+		this.driving = OSGiUtils.getService(context, IDrivingService.class, String.format("(%s=true)", DrivingService.ACTIVE));
+		IHumanSensors hs = OSGiUtils.getService(context, IHumanSensors.class);
+		
+		boolean how = hs.areTheHandsOnTheWheel();
+		String driverface = hs.getFaceStatus().name();
+		boolean driverseat = hs.isDriverSeatOccupied();
+		
+		if(event.getType() == ServiceEvent.MODIFIED) 
+		{
+			String mode = driving.getId();
+			if (mode == EDrivingMode.L3_CC || mode == EDrivingMode.L3_HC || mode == EDrivingMode.L3_TJC) {
+				
+				if(driverseat) {
+					System.out.println("-----------------Activando INTERACT-3-----------------");
+					
+					
+				}else {
+					System.out.println("-----------------Activando INTERACT-3-----------------");
+					
+				}
+			}
+			System.out.println("----------------------------------------------------");
+		} else if (event.getType() == ServiceEvent.UNREGISTERING) {
+			
+
+		}
+		
+	}
+	
+
+}

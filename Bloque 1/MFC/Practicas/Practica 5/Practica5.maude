@@ -1,0 +1,6 @@
+let x = 0
+ in {
+ spawn(x := x + 1) ;
+ spawn(x := x + 1) ;
+ x
+ } 

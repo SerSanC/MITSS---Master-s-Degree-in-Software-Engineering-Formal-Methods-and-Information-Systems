@@ -1,0 +1,21 @@
+
+
+<hr class="w-100">
+
+<div class="row">
+
+</div>
+
+<div class="row justify-content-center mb-2 pt-4 pb-4">
+    <div class="col-md-12">
+        <h2 class="bg-dark text-white p-1 pl-4 rounded"><i class="mr-4 fas fa-plus-square"></i>Añadir nuev@ socios</h2>
+    </div>
+    <div class="col-md-7 mt-3">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-success btn-block" type="submit">Guardar socio</button>
+            <a ><button class="mt-2 btn btn-primary btn-block" type="submit">Cancelar</button></a>
+        </form>
+    </div>
+</div>

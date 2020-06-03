@@ -1,0 +1,140 @@
+package autonomouscar.humansensors.monitor;
+
+import java.util.Dictionary;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+import sua.autonomouscar.driving.interfaces.IDrivingService;
+import sua.autonomouscar.driving.interfaces.IL0_ManualDriving;
+import sua.autonomouscar.infrastructure.OSGiUtils;
+import sua.autonomouscar.infrastructure.Thing;
+import sua.autonomouscar.infrastructure.devices.HandsOnWheelSensor;
+import sua.autonomouscar.infrastructure.devices.Steering;
+import sua.autonomouscar.infrastructure.driving.DrivingService;
+import sua.autonomouscar.infrastructure.driving.L2_DrivingService;
+import sua.autonomouscar.infrastructure.interaction.InteractionMechanism;
+import sua.autonomouscar.infrastructure.interaction.NotificationService;
+import sua.autonomouscar.interfaces.EDrivingMode;
+import sua.autonomouscar.interfaces.EFaceStatus;
+import sua.autonomouscar.interfaces.ERoadType;
+import sua.autonomouscar.simulation.console.commands.L0_ManualDrivingConfigurator;
+import sua.autonomouscar.simulation.console.commands.L1_AssistedDrivingConfigurator;
+import sua.autonomouscar.simulation.console.commands.L2_AdaptiveCruiseControlConfigurator;
+import sua.autonomouscar.simulation.console.commands.L2_LaneKeepingAssistConfigurator;
+import sua.autonomouscar.simulation.console.commands.L3_CityChaufferConfigurator;
+import sua.autonomouscar.simulation.console.commands.L3_HighwayChaufferConfigurator;
+import sua.autonomouscar.simulation.console.commands.L3_TrafficJamChaufferConfigurator;
+import sua.autonomouscar.simulation.console.commands.ParkInTheRoadShoulderFallbackPlanConfigurator;
+import sua.autonomouscar.simulation.console.commands.EmergencyFallbackPlanConfigurator;
+import sua.autonomouscar.simulation.console.commands.L0_ManualDrivingConfigurator;
+
+import sua.autonomouscar.devices.interfaces.IFaceMonitor;
+import sua.autonomouscar.devices.interfaces.IHandsOnWheelSensor;
+import sua.autonomouscar.devices.interfaces.IHumanSensors;
+import sua.autonomouscar.devices.interfaces.ISeatSensor;
+import sua.autonomouscar.interfaces.IIdentifiable;
+
+
+
+
+public class HumanSensors implements ServiceListener  {
+	
+	private BundleContext context; 
+	private ERoadType previousType = null; 
+
+	private IDrivingService driving; 
+	private IFaceMonitor face;
+	private ISeatSensor seat;
+	private IHumanSensors hs;
+	
+	
+	public HumanSensors(BundleContext bundleContext) {
+		this.context = bundleContext;	
+	}
+
+	@Override
+	public void serviceChanged(ServiceEvent event) {
+		// TODO Auto-generated method stub
+		ServiceReference ref = event.getServiceReference();
+
+		this.driving = OSGiUtils.getService(context, IDrivingService.class, String.format("(%s=true)", DrivingService.ACTIVE));
+		IHumanSensors hs = OSGiUtils.getService(context, IHumanSensors.class);
+		
+		
+		
+		if(event.getType() == ServiceEvent.MODIFIED) {
+			System.out.println("Modified");
+			boolean how = hs.areTheHandsOnTheWheel();
+			String driverface = hs.getFaceStatus().name();
+			boolean driverseat = hs.isDriverSeatOccupied();
+			
+			System.out.println(how);
+			System.out.println(driverface);
+			System.out.println(driverseat);
+		
+		
+		String monitor = (String) event.getServiceReference().getProperty("id");
+		System.out.println("Monitor: " + monitor);
+		String mode = driving.getId();
+		
+		if(monitor.compareTo("DriverFaceMonitor") == 0){
+			
+			if (mode == EDrivingMode.L3_CC || mode == EDrivingMode.L3_HC || mode == EDrivingMode.L3_TJC) {
+				
+				if(how && driverseat && driverface == EFaceStatus.LOOKING_FORWARD.toString()) {
+					System.out.println("-----------------Activando INTERACT-1-----------------");
+					
+					
+				}
+				else if(driverface == EFaceStatus.SLEEPING.toString() && driverseat) {
+					System.out.println("-----------------Activando INTERACT-1-----------------");
+				}
+				else if(driverface == EFaceStatus.UNKNOWN.toString()) {
+					System.out.println("-----------------Activando INTERACT-1-----------------");
+				}
+		}
+			}
+		
+		if (monitor.compareTo("HandsOnWheelSensor") == 0) {
+			System.out.println("Entrou");
+			if (mode == EDrivingMode.L3_CC || mode == EDrivingMode.L3_HC || mode == EDrivingMode.L3_TJC) {
+				if(how) {
+					System.out.println("-----------------Activando INTERACT-2-----------------");
+					
+					
+				}else if (!how) {
+					System.out.println("-----------------Activando INTERACT-2-----------------");
+					
+				}
+				else if (!driverseat){
+					System.out.println("-----------------Activando INTERACT-2-----------------");
+				}
+			}
+		}
+		
+		if(monitor == "DriverSeatSensor") {
+			if (mode == EDrivingMode.L3_CC || mode == EDrivingMode.L3_HC || mode == EDrivingMode.L3_TJC) {
+				if(driverseat) {
+					System.out.println("-----------------Activando INTERACT-3-----------------");
+					
+					
+				}else {
+					System.out.println("-----------------Activando INTERACT-3-----------------");
+					
+				}
+			}
+		}
+	
+				
+			System.out.println("----------------------------------------------------");
+		} else if (event.getType() == ServiceEvent.UNREGISTERING) {
+			
+
+		}
+		
+	}
+	
+
+}

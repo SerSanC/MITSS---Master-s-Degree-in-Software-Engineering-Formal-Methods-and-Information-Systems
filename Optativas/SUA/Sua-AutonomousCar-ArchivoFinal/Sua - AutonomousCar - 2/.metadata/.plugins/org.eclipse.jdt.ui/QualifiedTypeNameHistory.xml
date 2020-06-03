@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="sua.autonomouscar.infrastructure.driving.L2_DrivingService"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.simulation.console.commands.L2_AdaptiveCruiseControlConfigurator"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.simulation.console.commands.L3_HighwayChaufferConfigurator"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.simulation.console.commands.L3_CityChaufferConfigurator"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.interfaces.ERoadType"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.interfaces.ERoadStatus"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.simulation.console.commands.L3_TrafficJamChaufferConfigurator"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.simulation.console.commands.ParkInTheRoadShoulderFallbackPlanConfigurator"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.simulation.console.commands.EmergencyFallbackPlanConfigurator"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.devices.interfaces.IDistanceSensor"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="autonomouscar.roadtype.monitor.RoadMonitor"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.infrastructure.devices.RoadSensor"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.devices.interfaces.ILineSensor"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.interfaces.EDrivingMode"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.simulation.console.commands.L0_ManualDrivingConfigurator"/>
+<fullyQualifiedTypeName name="java.util.logging.Handler"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.infrastructure.devices.HandsOnWheelSensor"/>
+<fullyQualifiedTypeName name="org.osgi.framework.ServiceEvent"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.infrastructure.interaction.NotificationService"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.infrastructure.devices.Steering"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.infrastructure.interaction.InteractionMechanism"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.interfaces.EFaceStatus"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.devices.interfaces.IHumanSensors"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.infrastructure.devices.HumanSensors"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.interaction.interfaces.INotificationService"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.devices.interfaces.IFaceMonitor"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.devices.interfaces.IHandsOnWheelSensor"/>
+<fullyQualifiedTypeName name="sua.autonomouscar.devices.interfaces.ISeatSensor"/>
+</qualifiedTypeNameHistroy>

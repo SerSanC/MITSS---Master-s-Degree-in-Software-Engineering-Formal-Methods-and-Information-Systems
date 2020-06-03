@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Monitor
+Bundle-SymbolicName: AutonomousCar.Driving.Monitor
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: autonomouscar.driving.monitor.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.osgi.framework;version="1.3.0"
+Automatic-Module-Name: AutonomousCar.Driving.Monitor
+Require-Bundle: AutonomousCar.interfaces,
+ AutonomousCar.infrastructure,
+ AutonomousCar.simulation.console.commands

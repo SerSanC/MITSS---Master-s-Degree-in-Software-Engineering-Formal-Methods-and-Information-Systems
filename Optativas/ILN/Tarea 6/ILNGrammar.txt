@@ -1,0 +1,507 @@
+# Regexp Chunk Parsing Grammar History
+# Saved Fri Apr 17 13:05:04 2020
+# Development set: conll2000
+
+Grammar 1/97 (precision=12.02%, recall=7.12%, fscore=8.94%)
+  {<NN>}
+
+Grammar 2/97 (precision=33.33%, recall=19.74%, fscore=24.80%)
+  {<DT>?<NN>}
+
+Grammar 3/97 (precision=40.60%, recall=34.95%, fscore=37.57%)
+  {<DT>?(<NN>|<NNS>)*}
+
+Grammar 4/97 (precision=31.40%, recall=39.48%, fscore=34.98%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>}
+
+Grammar 5/97 (precision=40.60%, recall=34.95%, fscore=37.57%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNT>}
+
+Grammar 6/97 (precision=40.60%, recall=34.95%, fscore=37.57%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<D>}
+
+Grammar 7/97 (precision=40.60%, recall=34.95%, fscore=37.57%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<DT>}
+
+Grammar 8/97 (precision=18.45%, recall=19.26%, fscore=18.84%)
+  {<DT>*?(<NN>|<NNS>)*}
+  {<DT>}
+
+Grammar 9/97 (precision=40.60%, recall=34.95%, fscore=37.57%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<DT>}
+
+Grammar 10/97 (precision=29.84%, recall=29.45%, fscore=29.64%)
+  {<DT>?(<NN>|<NNS>)}
+  {<DT>}
+
+Grammar 11/97 (precision=40.60%, recall=34.95%, fscore=37.57%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<DT>}
+
+Grammar 12/97 (precision=40.60%, recall=34.95%, fscore=37.57%)
+  {<DT>?(<NN>|<NNS>)*}
+
+Grammar 13/97 (precision=25.45%, recall=18.12%, fscore=21.17%)
+  {<DT>*?(<NN>|<NNS>)*}
+
+Grammar 14/97 (precision=40.60%, recall=34.95%, fscore=37.57%)
+  {<DT>?(<NN>|<NNS>)*}
+
+Grammar 15/97 (precision=12.65%, recall=5.02%, fscore=7.18%)
+  {<DT>?(<NN>|<NNS>)*?<NNP>}
+
+Grammar 16/97 (precision=40.60%, recall=34.95%, fscore=37.57%)
+  {<DT>?(<NN>|<NNS>)*}
+
+Grammar 17/97 (precision=31.40%, recall=39.48%, fscore=34.98%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>}
+
+Grammar 18/97 (precision=26.50%, recall=39.97%, fscore=31.87%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>}
+  {<JJ>}
+
+Grammar 19/97 (precision=26.50%, recall=39.97%, fscore=31.87%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>}
+  {<JJ>}
+
+Grammar 20/97 (precision=35.78%, recall=48.06%, fscore=41.02%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>}
+
+Grammar 21/97 (precision=36.22%, recall=48.06%, fscore=41.31%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+
+Grammar 22/97 (precision=35.78%, recall=48.06%, fscore=41.02%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>}
+
+Grammar 23/97 (precision=36.22%, recall=48.06%, fscore=41.31%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+
+Grammar 24/97 (precision=35.61%, recall=48.06%, fscore=40.97%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<POS>}
+
+Grammar 25/97 (precision=35.61%, recall=48.06%, fscore=40.97%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<POS>*}
+
+Grammar 26/97 (precision=35.61%, recall=48.06%, fscore=40.97%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<POS>}
+
+Grammar 27/97 (precision=32.82%, recall=48.06%, fscore=39.00%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<POS>?<VB>}
+
+Grammar 28/97 (precision=32.35%, recall=48.06%, fscore=38.67%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<POS>?<VB>*}
+
+Grammar 29/97 (precision=32.85%, recall=48.06%, fscore=39.03%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<VB>*}
+
+Grammar 30/97 (precision=36.22%, recall=48.06%, fscore=41.31%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {}
+
+Grammar 31/97 (precision=36.22%, recall=48.06%, fscore=41.31%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+
+Grammar 32/97 (precision=15.28%, recall=14.24%, fscore=14.74%)
+  {<DT>?(<NN>|<NNS>)*?<VB>*}
+  {<NNP>*}
+  {<JJ>*}
+
+Grammar 33/97 (precision=32.85%, recall=48.06%, fscore=39.03%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<VB>*}
+
+Grammar 34/97 (precision=36.22%, recall=48.06%, fscore=41.31%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+
+Grammar 35/97 (precision=32.85%, recall=48.06%, fscore=39.03%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<VB>*}
+
+Grammar 36/97 (precision=33.64%, recall=48.06%, fscore=39.57%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<RB>*}
+
+Grammar 37/97 (precision=30.71%, recall=48.06%, fscore=37.48%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+  {<VB>*}
+  {<RB>*}
+
+Grammar 38/97 (precision=36.22%, recall=48.06%, fscore=41.31%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<JJ>*}
+
+Grammar 39/97 (precision=38.74%, recall=47.57%, fscore=42.70%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<VB>*}
+
+Grammar 40/97 (precision=39.84%, recall=47.57%, fscore=43.36%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<RB>*}
+
+Grammar 41/97 (precision=35.77%, recall=47.57%, fscore=40.83%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<RB>*}
+  {<VB>*}
+
+Grammar 42/97 (precision=36.39%, recall=47.57%, fscore=41.23%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<VBN>*}
+  {<VB>*}
+
+Grammar 43/97 (precision=40.61%, recall=47.57%, fscore=43.82%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<VBN>*}
+
+Grammar 44/97 (precision=40.61%, recall=47.57%, fscore=43.82%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<VBN>*}
+
+Grammar 45/97 (precision=37.64%, recall=47.57%, fscore=42.03%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {(<RB>|<VBN>)*}
+
+Grammar 46/97 (precision=36.70%, recall=47.57%, fscore=41.44%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {(<VB>|<VBN>)*}
+
+Grammar 47/97 (precision=43.56%, recall=47.57%, fscore=45.48%)
+  {<DT>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 48/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 49/97 (precision=45.09%, recall=46.12%, fscore=45.60%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<VB>*}
+
+Grammar 50/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 51/97 (precision=45.12%, recall=53.88%, fscore=49.12%)
+  {<VB>?<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 52/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 53/97 (precision=49.59%, recall=58.74%, fscore=53.78%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<VBZ>}
+  {<NNP>*}
+
+Grammar 54/97 (precision=49.59%, recall=58.74%, fscore=53.78%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<VBZ>*}
+  {<NNP>*}
+
+Grammar 55/97 (precision=32.60%, recall=36.08%, fscore=34.25%)
+  {<DT>*?<JJ>?(<NN>|<NNS>)*}
+  {<VBZ>*}
+  {<NNP>*}
+
+Grammar 56/97 (precision=41.06%, recall=47.57%, fscore=44.08%)
+  {<DT>?<JJ>*?(<NN>|<NNS>)*}
+  {<VBZ>*}
+  {<NNP>*}
+
+Grammar 57/97 (precision=49.59%, recall=58.74%, fscore=53.78%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<VBZ>}
+  {<NNP>*}
+
+Grammar 58/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {(<VBZ><VBZ>)}
+  {<NNP>*}
+
+Grammar 59/97 (precision=49.59%, recall=58.74%, fscore=53.78%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {(<VBZ>|<VBZ>)}
+  {<NNP>*}
+
+Grammar 60/97 (precision=45.43%, recall=58.74%, fscore=51.24%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {(<VBZ>|<RB>)}
+  {<NNP>*}
+
+Grammar 61/97 (precision=46.24%, recall=58.74%, fscore=51.75%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {(<VBZ>|<RB>)*}
+  {<NNP>*}
+
+Grammar 62/97 (precision=45.43%, recall=58.74%, fscore=51.24%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {(<VBZ>|<RB>)}
+  {<NNP>*}
+
+Grammar 63/97 (precision=46.36%, recall=58.74%, fscore=51.82%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {(<VBZ>|<VBN>)}
+  {<NNP>*}
+
+Grammar 64/97 (precision=44.43%, recall=58.74%, fscore=50.59%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {(<VB>|<VBN>)*}
+  {<NNP>*}
+
+Grammar 65/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 66/97 (precision=33.95%, recall=50.32%, fscore=40.55%)
+  {<DT>?<JJ>?<IN>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 67/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 68/97 (precision=36.97%, recall=58.74%, fscore=45.38%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<IN>}
+  {<NNP>*}
+
+Grammar 69/97 (precision=34.60%, recall=58.74%, fscore=43.55%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<IN
+  |
+  TO>}
+  {<NNP>*}
+
+Grammar 70/97 (precision=34.60%, recall=58.74%, fscore=43.55%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {(<IN
+  >|
+  <TO>)}
+  {<NNP>*}
+
+Grammar 71/97 (precision=35.07%, recall=58.74%, fscore=43.92%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {(<IN
+  >|
+  <TO>)*}
+  {<NNP>*}
+
+Grammar 72/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 73/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 74/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<NNP>*}
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 75/97 (precision=48.66%, recall=58.74%, fscore=53.23%)
+  {<CC>*}
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 76/97 (precision=48.66%, recall=58.74%, fscore=53.23%)
+  {<CC>}
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 77/97 (precision=44.18%, recall=59.55%, fscore=50.72%)
+  {(<CC>|<CD>)}
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 78/97 (precision=45.21%, recall=59.55%, fscore=51.40%)
+  {(<CC>|<CD>)*}
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 79/97 (precision=44.18%, recall=59.55%, fscore=50.72%)
+  {(<CC>|<CD>)}
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 80/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 81/97 (precision=44.18%, recall=59.55%, fscore=50.72%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {(<CC>|<CD>)}
+
+Grammar 82/97 (precision=48.66%, recall=58.74%, fscore=53.23%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<CC>}
+
+Grammar 83/97 (precision=49.59%, recall=58.74%, fscore=53.78%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<NN>
+  ?
+  <VBZ>}
+
+Grammar 84/97 (precision=47.89%, recall=58.74%, fscore=52.76%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<NN>
+  ?
+  <VBZ>
+  ?
+  <RB>}
+
+Grammar 85/97 (precision=48.92%, recall=58.74%, fscore=53.38%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<NN>
+  ?
+  <VBZ>
+  ?
+  <RB>
+  ?
+  <VBN>}
+
+Grammar 86/97 (precision=48.92%, recall=58.74%, fscore=53.38%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<TO>
+  ?
+  <VBZ>
+  ?
+  <RB>
+  ?
+  <VBN>}
+
+Grammar 87/97 (precision=48.92%, recall=58.74%, fscore=53.38%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<TO>
+  ?
+  <VB>
+  ?
+  <RB>
+  ?
+  <VBN>}
+
+Grammar 88/97 (precision=46.78%, recall=58.74%, fscore=52.08%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<TO>
+  ?
+  <VB>
+  }
+
+Grammar 89/97 (precision=45.43%, recall=58.74%, fscore=51.24%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<TO>
+  ?
+  <VB>
+  *}
+
+Grammar 90/97 (precision=37.50%, recall=58.74%, fscore=45.78%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<NN>
+  ?
+  <IN>
+  *}
+
+Grammar 91/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+
+Grammar 92/97 (precision=52.53%, recall=58.74%, fscore=55.46%)
+  {<DT>?<JJ>?(<NN>|<NNS>)*}
+  {<NNP>*}
+  {<IN><DT><NN>*}
+
+Grammar 93/97 (precision=35.52%, recall=43.85%, fscore=39.25%)
+  {(<DT>?<JJ>?)(<NN>|<NNS>|<NNP>)}
+
+Grammar 94/97 (precision=31.69%, recall=44.66%, fscore=37.07%)
+  {(<DT>?<JJ>?)(<NN>|<NNS>|<NNP>|<PRP$>|<CD>)}
+
+Grammar 95/97 (precision=34.93%, recall=51.78%, fscore=41.72%)
+  {(<DT>?<JJ>?)(<NN>|<NNS>|<NNP>|<PRP$>|<CD>)|
+  <PRP>
+  |
+  <EX>
+  }
+
+Grammar 96/97 (precision=67.13%, recall=71.04%, fscore=69.03%)
+  {(<DT>?<JJ>?)(<NN>|<NNS>|<NNP>|<PRP$>|<CD>)*
+  |
+  <PRP>
+  |
+  <EX>
+  }
+
+Grammar 97/97 (precision=69.78%, recall=72.49%, fscore=71.11%)
+  {(<DT>?<JJ>?)*(<NN>|<NNS>|<NNP>|<PRP$>|<CD>)*
+  |
+  <PRP>
+  |
+  <EX>
+  }

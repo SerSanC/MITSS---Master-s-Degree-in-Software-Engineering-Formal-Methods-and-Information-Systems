@@ -1,0 +1,1197 @@
+------------------
+--- FUN Syntax ---
+------------------
+
+fmod QID# is
+  including QID * (
+  op _+_ to _#+#_,op _-_ to _#-#_,op _*_ to _#*#_,op _/_ to _#/#_,
+  op _<_ to _#<#_,op _<=_ to _#<=#_,op _>_ to _#>#_,op _>=_ to _#>=#_
+  ) .
+endfm
+
+fmod INT# is
+  including INT * (
+  op _+_ to _#+#_,op _-_ to _#-#_,op _*_ to _#*#_,op _/_ to _#/#_,
+  op _<_ to _#<#_,op _<=_ to _#<=#_,op _>_ to _#>#_,op _>=_ to _#>=#_
+  ) .
+endfm
+
+fmod NAME is
+  including QID# .
+  sort Name .
+  subsort Qid < Name .
+  ops a b c d e f g h i j k l m n o p q r s t u v x y z w : -> Name .
+endfm
+
+fmod NAME-LIST is
+  including NAME .
+  sort NameList .
+  subsort Name < NameList .
+  op `(`) : -> NameList .
+  op _,_ : NameList NameList -> NameList [assoc id: ()] .
+endfm
+
+fmod GENERIC-EXP-SYNTAX is
+  including NAME .
+  including INT# .
+  sort Exp .
+  subsorts Int Name < Exp .
+endfm
+
+fmod EXP-LIST is
+  including GENERIC-EXP-SYNTAX .
+  including NAME-LIST .
+  sort ExpList .
+  subsorts Exp NameList < ExpList .
+  op _,_ : ExpList ExpList -> ExpList [ditto] .
+endfm
+
+fmod ARITHMETIC-EXP-SYNTAX is
+  including GENERIC-EXP-SYNTAX .
+  ops _+_ _-_ : Exp Exp -> Exp [prec 33 gather (E e)] .
+  ops _*_ _/_ _%_ : Exp Exp -> Exp [prec 31 gather (E e)] .
+endfm
+
+fmod BOOLEAN-EXP-SYNTAX is
+  including GENERIC-EXP-SYNTAX .
+  ops true false : -> Exp .
+  ops _==_ _<=_ _>=_ _and_ _or_ : Exp Exp -> Exp .
+  op not_ : Exp -> Exp .
+endfm
+
+fmod IF-SYNTAX is
+  including GENERIC-EXP-SYNTAX .
+  op if_then_else_ : Exp Exp Exp -> Exp .
+endfm
+
+fmod FUNCTION-SYNTAX is
+  including EXP-LIST .
+  op fun_->_ : NameList Exp -> Exp .
+  op __ : Exp ExpList -> Exp [prec 0] .
+endfm
+
+fmod BINDING-SYNTAX is
+  including GENERIC-EXP-SYNTAX .
+  including NAME-LIST .
+  sorts Binding Bindings .
+  subsort Binding < Bindings .
+  op _=_ : Exp Exp -> Binding .
+  op _and_ : Bindings Bindings -> Bindings [assoc prec 100] .
+endfm
+
+fmod LET-SYNTAX is
+  including BINDING-SYNTAX .
+  op let_in_ : Bindings Exp -> Exp .
+endfm
+
+fmod LETREC-SYNTAX is
+  including BINDING-SYNTAX .
+  op let`rec_in_ : Bindings Exp -> Exp .
+endfm
+
+fmod LIST-SYNTAX is
+  including EXP-LIST .
+  op [] : -> Exp .
+  op [_] : ExpList -> Exp .
+  ops car cdr null? : Exp -> Exp .
+  op cons : Exp Exp -> Exp .
+endfm
+
+fmod ASSIGNMENT-SYNTAX is
+  including GENERIC-EXP-SYNTAX .
+  op _:=_ : Name Exp -> Exp .
+endfm
+
+fmod SEQ-COMP-SYNTAX is
+  including GENERIC-EXP-SYNTAX .
+  op _;_ : Exp Exp -> Exp [assoc prec 50] .
+endfm
+
+fmod BLOCK-SYNTAX is
+  including SEQ-COMP-SYNTAX .
+  op {} : -> Exp .
+  op {_} : Exp -> Exp .
+endfm
+
+fmod LOOP-SYNTAX is
+  including GENERIC-EXP-SYNTAX .
+  op while__ : Exp Exp -> Exp .
+  op for(_;_;_)_ : Exp Exp Exp Exp -> Exp .
+endfm
+
+fmod FUN-SYNTAX is
+  including ARITHMETIC-EXP-SYNTAX .
+  including BOOLEAN-EXP-SYNTAX .
+  including IF-SYNTAX .
+  including FUNCTION-SYNTAX .
+  including LET-SYNTAX .
+  including LETREC-SYNTAX .
+  including LIST-SYNTAX .
+  including ASSIGNMENT-SYNTAX .
+  including SEQ-COMP-SYNTAX .
+  including BLOCK-SYNTAX .
+  including LOOP-SYNTAX .
+  including POINTER-SYNTAX .
+endfm
+
+
+---------------------
+--- Fun Semantics ---
+---------------------
+
+fmod LOCATION is
+  including INT# .
+  sort Location .
+  op loc : Nat -> Location .
+endfm
+
+fmod LOCATION-LIST is
+  including LOCATION .
+  sort LocationList .
+  subsort Location < LocationList .
+  op nil : -> LocationList .
+  op _,_ : LocationList LocationList -> LocationList [assoc id: nil] .
+  op locs : Nat Nat -> LocationList .
+  vars N # : Nat .
+  eq locs(N, 0) = nil .
+  eq locs(N, #) = loc(N), locs(N #+# 1, # #-# 1) .
+endfm
+
+fmod ENVIRONMENT is
+  including NAME-LIST .
+  including LOCATION-LIST .
+  sort Env .
+  op empty : -> Env .
+  op [_,_] : Name Location -> Env .
+  op __ : Env Env -> Env [assoc comm id: empty] .
+  op _[_] : Env Name -> [Location] .
+  op _[_<-_] : Env NameList LocationList -> [Env] .
+  vars X X' : Name .  vars Env : Env .  vars L L' : Location .
+  var Xl : NameList .  var Ll : LocationList .
+  eq ([X,L] Env)[X] = L .
+  eq ([X',L'] Env)[X <- L] = if X == X' then [X',L] Env else [X',L'] (Env[X <- L]) fi .
+  eq empty[X <- L] = [X,L] .
+  eq Env[X,Xl <- L,Ll] = Env[X <- L][Xl <- Ll] .
+  eq Env[() <- nil] = Env .
+endfm
+
+fmod VALUE is
+  sort Value .
+  op nothing : -> Value .
+endfm
+
+fmod VALUE-LIST is
+  including VALUE .
+  sort ValueList .
+  subsort Value < ValueList .
+  op nil : -> ValueList .
+  op _,_ : ValueList ValueList -> ValueList [assoc id: nil] .
+endfm
+
+fmod STORE is
+  including LOCATION-LIST .
+  including VALUE-LIST .
+  sort Store .
+  op empty : -> Store .
+  op [_,_] : Location Value -> Store .
+  op __ : Store Store -> Store [assoc comm id: empty] .
+  op _[_] : Store Location -> [Value] .
+  op _[_<-_] : Store LocationList ValueList -> [Store] .
+  vars L L' : Location .  var Mem : Store .  vars V V' : Value .
+  var Ll : LocationList .  var Vl : ValueList .
+  eq ([L,V] Mem)[L] = V .
+  eq ([L',V'] Mem)[L <- V] = if L == L' then [L',V] Mem else [L',V'] (Mem[L <- V]) fi .
+  eq empty[L <- V] = [L,V] .
+  eq Mem[L,Ll <- V,Vl] = Mem[L <- V][Ll <- Vl] .
+  eq Mem[nil <- nil] = Mem .
+endfm
+
+fmod CONTINUATION is
+  sorts Continuation ContinuationItem .
+  op stop : -> Continuation .
+  op _->_ : ContinuationItem Continuation -> Continuation .
+endfm
+
+fmod FUN-STATE is
+  sorts PLStateAttribute PLState .
+  subsort PLStateAttribute < PLState .
+  including ENVIRONMENT .
+  including STORE .
+  including CONTINUATION .
+  op empty : -> PLState .
+  op __ : PLState PLState -> PLState [assoc comm id: empty] .
+  op nextLoc : Nat -> PLStateAttribute .
+  op mem : Store -> PLStateAttribute .
+  op k : Continuation -> PLStateAttribute .
+  op x : Continuation -> PLStateAttribute .
+endfm
+
+fmod FUN-HELPING-OPERATIONS is
+  including NAME-LIST .
+  including EXP-LIST .
+  including FUN-STATE .
+
+  var X : Name .  vars E E' : Exp .  var El : ExpList .  var K : Continuation .
+  vars V : Value .  var Vl : ValueList .  var Xl : NameList .
+  var Env : Env .  var Mem : Store .  var N : Nat .  var Ll : LocationList .
+
+  op exp : ExpList Env -> ContinuationItem .
+  op val_ : ValueList -> ContinuationItem .
+  eq k(exp((), Env) -> K) = k(val(nil) -> K) .
+  eq k(exp((E,E',El), Env) -> K) = k(exp(E, Env) -> exp((E',El), Env) -> K) .
+  eq k(val(V) -> exp(El, Env) -> K) = k(exp(El, Env) -> val(V) -> K) .
+  eq k(val(Vl) -> val(V) -> K) = k(val(V,Vl) -> K) .
+
+  op bindTo : NameList Env -> ContinuationItem .
+  op bindTo : NameList Env LocationList -> ContinuationItem .
+  eq bindTo(Xl,Env) = bindTo(Xl, Env, nil) .
+  eq k(val(V,Vl) -> bindTo((X,Xl), Env, Ll) -> K)
+     mem(Mem) nextLoc(N)
+   = k(val(Vl) -> bindTo(Xl, Env[X <- loc(N)], (Ll,loc(N))) -> K)
+     mem(Mem [loc(N),V]) nextLoc(N #+# 1) .
+  eq k(val(nil) -> bindTo((), Env, Ll) -> K) = k(pair(Env, Ll) -> K) .
+  eq k(bindTo((X,Xl), Env, Ll) -> K) nextLoc(N)
+   = k(bindTo(Xl, Env[X <- loc(N)], (Ll,loc(N))) -> K) nextLoc(N #+# 1) .
+  eq k(bindTo((), Env, Ll) -> K) = k(pair(Env,Ll) -> K) .
+
+  op writeTo_ : LocationList -> ContinuationItem .
+  eq k(val(Vl) -> writeTo(Ll) -> K) mem(Mem)
+   = k(K) mem(Mem[Ll <- Vl]) .
+
+  op pair : Env LocationList -> ContinuationItem .
+  ops exp exp* : ExpList -> ContinuationItem .
+  op writeTo : -> ContinuationItem .
+  eq pair(Env,Ll) -> exp(El) -> K = exp(El, Env) -> pair(Env, Ll) -> K .
+  eq pair(Env,Ll) -> writeTo -> K = writeTo(Ll) -> pair(Env,Ll) -> K .
+  eq pair(Env,Ll) -> exp*(E) -> K = exp(E, Env) -> K .
+
+  op discard : -> ContinuationItem .
+  eq k(val(Vl) -> discard -> K) = k(K) .
+endfm
+
+fmod GENERIC-EXP-SEMANTICS is
+  including FUN-HELPING-OPERATIONS .
+  op int : Int -> Value .
+  var I : Int .  var X : Name .  var L : Location .  var V : Value .
+  var K : Continuation .  var Env : Env .  var Mem : Store .
+
+  eq k(exp(I, Env) -> K) = k(val(int(I)) -> K) .
+  eq k(exp(X, ([X,L] Env)) -> K) mem(Mem)
+   = k(val(Mem[L]) -> K) mem(Mem) .
+endfm
+
+fmod ARITHMETIC-EXP-SEMANTICS is
+  including ARITHMETIC-EXP-SYNTAX .
+  including GENERIC-EXP-SEMANTICS .
+  vars E E' : Exp .  var K : Continuation .  vars I I' : Int .  var Env : Env .
+  ops + - * / % : -> ContinuationItem .
+  eq k(exp(E + E', Env) -> K) = k(exp((E,E'),Env) -> + -> K) .
+  eq k(val(int(I),int(I')) -> + -> K) = k(val(int(I #+# I')) -> K) .
+  eq k(exp(E - E', Env) -> K) = k(exp((E,E'), Env) -> - -> K) .
+  eq k(val(int(I),int(I')) -> - -> K) = k(val(int(I #-# I')) -> K) .
+  eq k(exp(E * E', Env) -> K) = k(exp((E,E'), Env) -> * -> K) .
+  eq k(val(int(I),int(I')) -> * -> K) = k(val(int(I #*# I')) -> K) .
+  eq k(exp(E / E', Env) -> K) = k(exp((E,E'), Env) -> / -> K) .
+  ceq k(val(int(I),int(I')) -> / -> K) = k(val(int(I quo I')) -> K) 
+  if I' =/= 0 .
+  eq k(exp(E % E', Env) -> K) = k(exp((E,E'), Env) -> % -> K) .
+  ceq k(val(int(I),int(I')) -> % -> K) = k(val(int(I rem I')) -> K) 
+  if I' =/= 0 .
+endfm
+
+fmod BOOLEAN-EXP-SEMANTICS is
+  including BOOLEAN-EXP-SYNTAX .
+  including GENERIC-EXP-SEMANTICS .
+  op bool : Bool -> Value .
+  ops == <= >= and or not : -> ContinuationItem .
+  vars E E' : Exp .  var K : Continuation .
+  vars I I' : Int .  vars B B' : Bool .  var Env : Env .
+  eq k(exp(true, Env) -> K) = k(val(bool(true)) -> K) .
+  eq k(exp(false, Env) -> K) = k(val(bool(false)) -> K) .
+  eq k(exp(E == E', Env) -> K) = k(exp((E,E'), Env) -> == -> K) .
+  eq k(val(int(I),int(I')) -> == -> K) = k(val(bool(I == I')) -> K) .
+  eq k(exp(E <= E', Env) -> K) = k(exp((E,E'), Env) -> <= -> K) .
+  eq k(val(int(I),int(I')) -> <= -> K) = k(val(bool(I #<=# I')) -> K) .
+  eq k(exp(E >= E', Env) -> K) = k(exp((E,E'), Env) -> >= -> K) .
+  eq k(val(int(I),int(I')) -> >= -> K) = k(val(bool(I #>=# I')) -> K) .
+  eq k(exp(E and E', Env) -> K) = k(exp((E,E'), Env) -> and -> K) .
+  eq k(val(bool(B),bool(B')) -> and -> K) = k(val(bool(B and B')) -> K) .
+  eq k(exp(E or E', Env) -> K) = k(exp((E,E'), Env) -> or -> K) .
+  eq k(val(bool(B),bool(B')) -> or -> K) = k(val(bool(B or B')) -> K) .
+  eq k(exp(not E, Env) -> K) = k(exp(E, Env) -> not -> K) .
+  eq k(val(bool(B)) -> not -> K) = k(val(bool(not B)) -> K) .
+endfm
+
+fmod IF-SEMANTICS is
+  including IF-SYNTAX .
+  including BOOLEAN-EXP-SEMANTICS .
+  vars BE E E' : Exp .  var K : Continuation .
+  var B : Bool .  var Env : Env .
+  op if : Exp Exp Env -> ContinuationItem .
+  eq k(exp(if BE then E else E', Env) -> K)
+   = k(exp(BE,Env) -> if(E,E',Env) -> K) .
+  eq k(val(bool(B)) -> if(E,E',Env) -> K)
+   = k(exp(if B then E else E' fi, Env) -> K) .
+endfm
+
+fmod FUNCTION-SEMANTICS is
+  including GENERIC-EXP-SEMANTICS .
+  including FUNCTION-SYNTAX .
+  op closure : NameList Exp Env -> Value .
+  op apply : -> ContinuationItem .
+  var Xl : NameList .  vars F Body : Exp .  var K : Continuation .
+  var Env : Env .  var El : ExpList .  var Vl : ValueList .
+  eq k(exp(fun Xl -> Body, Env) -> K) = k(val(closure(Xl, Body, Env)) -> K) .
+  eq k(exp(F(El), Env) -> K) = k(exp((F,El), Env) -> apply -> K) .
+  eq k(val(closure(Xl, Body, Env),Vl) -> apply -> K)
+   = k(val(Vl) -> bindTo(Xl, Env) -> exp*(Body) -> K) .
+endfm
+
+fmod BINDING-SEMANTICS is
+  including BINDING-SYNTAX .
+  including FUNCTION-SEMANTICS .
+  op `(_,_`) : NameList ExpList -> Bindings .
+  var X : Name .  vars Xl Xl' : NameList .
+  var E : Exp .  vars El El' : ExpList .
+  eq (X(Xl) = E) = (X = fun Xl -> E) .
+  eq (X = E) = (X, E) .
+  eq (Xl, El) and (Xl', El') = ((Xl,Xl'), (El,El')) .
+endfm
+
+fmod LET-SEMANTICS is
+  including LET-SYNTAX .
+  including BINDING-SEMANTICS .
+  var Xl : NameList .  var El : ExpList .  var E : Exp .
+  var K : Continuation .  var Env : Env .
+  eq k(exp(let (Xl,El) in E, Env) -> K)
+   = k(exp(El, Env) -> bindTo(Xl, Env) -> exp*(E) -> K) .
+endfm
+
+fmod LETREC-SEMANTICS is
+  including LETREC-SYNTAX .
+  including BINDING-SEMANTICS .
+  var Xl : NameList .  var K : Continuation .
+  var El : ExpList .  var E : Exp .  var Env : Env .
+  eq k(exp(let rec (Xl,El) in E, Env) -> K)
+   = k(bindTo(Xl,Env) -> exp(El) -> writeTo -> exp*(E) -> K) .
+endfm
+
+fmod LIST-SEMANTICS is
+  including LIST-SYNTAX .
+  including BOOLEAN-EXP-SEMANTICS .
+  op [_] : ValueList -> Value .
+  ops mkList car cdr cons null? : -> ContinuationItem .
+  vars E E' : Exp .  var El : ExpList .  var Env : Env .
+  var K : Continuation .  var V : Value .  var Vl : ValueList .
+  eq k(exp([], Env) -> K) = k(val([nil]) -> K) .
+  eq k(exp([El], Env) -> K) = k(exp(El, Env) -> mkList -> K) .
+  eq k(val(Vl) -> mkList -> K) = k(val([Vl]) -> K) .
+  eq k(exp(car(E), Env) -> K) = k(exp(E, Env) -> car -> K) .
+  eq k(val([V,Vl]) -> car -> K) = k(val(V) -> K) .
+  eq k(exp(cdr(E), Env) -> K) = k(exp(E, Env) -> cdr -> K) .
+  eq k(val([V,Vl]) -> cdr -> K) = k(val([Vl]) -> K) .
+  eq k(exp(cons(E,E'), Env) -> K) = k(exp((E,E'), Env) -> cons -> K) .
+  eq k(val(V,[Vl]) -> cons -> K) = k(val([V,Vl]) -> K) .
+  eq k(exp(null?(E), Env) -> K) = k(exp(E, Env) -> null? -> K) .
+  eq k(val([Vl]) -> null? -> K) = k(val(bool(Vl == nil)) -> K) .
+endfm
+
+fmod ASSIGNMENT-SEMANTICS is
+  including ASSIGNMENT-SYNTAX .
+  including GENERIC-EXP-SEMANTICS .
+  var X : Name .  var E : Exp .  var K : Continuation .
+  var Env : Env .  var L : Location .
+  eq k(exp(X := E, ([X,L] Env)) -> K)
+   = k(exp(E, ([X,L] Env)) -> writeTo(L) -> val(nothing) -> K) .
+endfm
+
+fmod SEQ-COMP-SEMANTICS is
+  including SEQ-COMP-SYNTAX .
+  including GENERIC-EXP-SEMANTICS .
+  vars E E' : Exp .  var K : Continuation .  var V : Value .  var Env : Env .
+  eq k(exp(E ; E', Env) -> K)
+   = k(exp(E, Env) -> discard -> exp(E', Env) -> K) .
+endfm
+
+fmod BLOCK-SEMANTICS is
+  including BLOCK-SYNTAX .
+  including GENERIC-EXP-SEMANTICS .
+  var E : Exp .  var K : Continuation .  var Env : Env .
+  eq k(exp({}, Env) -> K) = k(val(nothing) -> K) .
+  eq k(exp({E}, Env) -> K) = k(exp(E, Env) -> K) .
+endfm
+
+fmod LOOP-SEMANTICS is
+  including LOOP-SYNTAX .
+  including IF-SEMANTICS .
+  including BLOCK-SEMANTICS .
+  including SEQ-COMP-SEMANTICS .
+  vars Start Cond Step Body : Exp .  var K : Continuation .  var Env : Env .
+  eq for(Start ; Cond ; Step) Body = Start ; while Cond {Body ; Step} .
+  eq k(exp(while Cond Body, Env) -> K)
+   = k(exp(Cond, Env) -> if(Body ; while Cond Body, {}, Env) -> K) .
+endfm
+
+fmod POINTER-SEMANTICS is
+  including POINTER-SYNTAX .
+  including ASSIGNMENT-SYNTAX.
+  including FUN-HELPING-OPERATIONS .
+  op pointer : Location -> Value .
+  var X : Name .  var L1 L2 : Location .  var V : Value .
+  var K : Continuation .  
+  var Env : Env .  
+  var Mem : Store . var E : Exp .
+  eq k(exp(& X, Env) -> K) = k(val(pointer(Env[X])) -> K) .
+  eq k(exp(* X, ([X,L1] Env)) -> K) mem([L1,pointer(L2)] [L2,V] Mem)= k(val(V) -> K) mem([L1,pointer(L2)] [L2,V] Mem) .
+  eq k(exp(* X := E, ([X,L1] Env)) -> K) mem([L1,pointer(L2)] Mem)= k(exp(E, ([X,L1] Env)) -> writeTo(L2) -> val(nothing) -> K) mem([L1,pointer(L2)] Mem) .
+endfm
+
+fmod FUN-SEMANTICS is
+  including FUN-SYNTAX .
+  including ARITHMETIC-EXP-SEMANTICS .
+  including BOOLEAN-EXP-SEMANTICS .
+  including IF-SEMANTICS .
+  including FUNCTION-SEMANTICS .
+  including LET-SEMANTICS .
+  including LETREC-SEMANTICS .
+  including LIST-SEMANTICS .
+  including ASSIGNMENT-SEMANTICS .
+  including SEQ-COMP-SEMANTICS .
+  including BLOCK-SEMANTICS .
+  including LOOP-SEMANTICS .
+  including POINTER-SEMANTICS .
+
+  ops eval eval* : Exp -> [Value] .
+  op  [_]  : PLState -> [Value] .
+  op *[_]* : PLState -> [Value] .
+
+  var E : Exp .  var V : Value .  var S : PLState .
+  var N : Nat .  var Mem : Store .
+
+  eq eval(E) = [k(exp(E, (empty).Env) -> stop) nextLoc(0) mem(empty)] .
+  eq [k(val(V) -> stop) S] = V .
+
+  eq eval*(E) = *[k(exp(E, (empty).Env) -> stop) nextLoc(0) mem(empty)]* .
+  eq *[k(val(V) -> stop) nextLoc(N) mem(Mem)]* = V .
+endfm
+
+
+fmod POINTER-SYNTAX is
+	including GENERIC-EXP-SYNTAX .
+	ops &_ *_ : Name -> Exp .
+	endfm
+	fmod ASSIGNMENT-SYNTAX is
+	including GENERIC-EXP-SYNTAX .
+	op _:=_ : Exp Exp -> Exp .
+endfm
+
+
+
+
+--------------------
+--- FUN Examples ---
+--------------------
+
+mod FUN-TEST is
+  including FUN-SEMANTICS .
+endm
+
+red eval(
+  let rec f(n) = if n == 0
+                 then 1
+                 else n * f(n - 1)
+  in f(5)
+) .
+***> should be int(120)
+
+--- simple expressions
+
+red eval(1 + 4) .
+***> should be int(5) 
+
+red eval(10 - 3) .
+***> should be int(7) 
+
+red eval(4 * 6) .
+***> should be int(24) 
+
+red eval(21 / 3) .
+***> should be int(7) 
+
+red eval(23 / 3) .
+***> should be int(7) 
+
+red eval(23 % 3) .
+***> should be int(2) 
+
+red eval( (23 / 3) * 3 + 23 % 3) .
+***> should be int(23) 
+
+red eval(1 + 2 * 3 + 4) .
+***> should be int(11) 
+
+red eval(if 1 <= 2 then 3 else 4) .
+***> should be int(3) 
+
+red eval(
+  x
+) .
+***> should be undefined , x not in scope
+
+--- let
+
+red eval( 
+  let x = 5
+  in x
+) .
+***> should be int(5) 
+
+red eval(
+  let y = 10
+  in x
+) .
+***> should be undefined , x not in scope
+
+red eval(
+  let y = x
+  in 10
+) .
+***> should be undefined , x not in scope
+
+red eval(
+  let x = 1
+  in let y = 2
+     in x + y
+) .
+***> should be int(3) 
+
+red eval(
+  let x = 5
+  in let y = x
+     in y
+
+) .
+***> should be int(5) 
+
+red eval(
+  let z = let x = 1
+          in let y = 2
+             in x + y 
+  in z + z 
+) .
+***> should be int(6) 
+
+red eval(
+  let z = let x = 1
+          and y = 2
+          in x + y
+  in z + z
+) .
+***> should be int(6) 
+
+red eval(
+  let x = 1
+  in let z = let y = x + 4
+             in y
+     in z
+
+) .
+***> should be int(5) 
+
+red eval(
+  let x = 10
+  and y = x
+  in x + y
+) .
+***> should be undefined , x not in scope
+
+red eval(
+  let x = 10 and y = 0 and z = x
+  in let a = 5 and b = 7
+     in z
+) .
+***> should be undefined , x not in scope
+
+red eval(
+  3 + (let x = 10 in x)
+) .
+***> should be int(13) 
+
+red eval(
+  x + (let x = 10 in x)
+) .
+***> should be undefined , x not in scope
+
+red eval(
+  let x = 3 in (x + (let x = 10 in x))
+) .
+***> should be int(13) 
+
+red eval(
+  let x = 4
+  in let x = x + 1
+     in x
+) .
+***> should be int(5) 
+
+red eval(
+  let x = 1
+  in let y = let x = x + 4 in x
+     in x
+) .
+***> should be int(1) 
+
+red eval(
+  let x = 1
+  in let x = let x = x + 4 in x
+     in x
+) .
+***> should be int(5) 
+
+--- functions
+
+red eval(
+  fun () -> 0
+) .
+***> should be a closure 
+
+red eval(
+  fun (x) -> 0
+) .
+***> should be a closure 
+
+red eval(
+  fun x -> x
+) .
+***> should be a closure 
+
+red eval(
+  fun () -> x
+) .
+***> should be a closure 
+
+red eval(
+  fun y -> x
+) .
+***> should be a closure 
+
+red eval(
+  fun y -> y + x
+) .
+***> should be a closure 
+
+red eval(
+  fun () -> x * (y - z)
+) .
+***> should be a closure 
+
+red eval(
+  fun(x,y,z) -> x * (y - z)
+) .
+***> should be a closure 
+
+red eval(
+  fun x -> fun y -> fun z -> x * (y - z)
+) .
+***> should be a closure 
+
+red eval(
+  fun(x,y) -> 0
+) .
+***> should be a closure 
+
+red eval(
+  fun(x,y) -> (x y) 
+) .
+***> should be a closure 
+
+red eval(
+  (fun z -> 1 + 5 * z) 2
+) .
+***> should be int(11) 
+
+red eval(
+  (fun(x,y) -> 0)(2,3)
+) .
+***> should be int(0) 
+
+*** Four interesting examples
+red eval(
+  let f x = 0
+  in f( 1 / 0 )
+) .
+
+red eval(
+  let f x = 0
+  in f( fun(x) -> x )
+) .
+red eval(
+  (fun x -> 0) (1 / 0)
+) .
+
+red eval(
+  let f x = 0
+  in f( fun(x) -> x )
+) .
+
+red eval(
+  (fun(y,z) -> y + 5 * z) (1,2)
+) .
+***> should be int(11) under static scoping
+
+red eval(
+  ((fun y -> fun z -> y + 5 * z) 1) 2
+) .
+***> should be int(11) under static scoping
+***> should be undefined under dynamic scoping
+
+red eval(
+  (fun y -> y + 1) x
+) .
+***> should be undefined , x not in scope
+
+red eval(
+  (fun y -> y + 1) 2 + x
+) .
+***> should be undefined , x not in scope
+
+red eval(
+  let f = fun(y,z) -> y + 5 * z
+  in  f(1,2) + f(3,4)
+) .
+***> should be int(34) under static scoping
+***> should be undefined under dynamic scoping
+
+red eval(
+  let f(y,z) = y + 5 * z
+  in  f(1,2) + f(3,4)
+) .
+***> should be int(34) under static scoping
+***> should be undefined under static scoping
+
+red eval(
+  let f(x,y) = y + 5 * z
+  in  f(1,2) + f(3,4)
+) .
+***> should be undefined , z not in scope
+
+red eval(
+  (fun (x,y) -> x y) ((fun z -> 2 * z), 3)
+) .
+***> should be int(6) under static scoping
+***> should be undefined under dynamic scoping
+
+red eval(
+  let f(x,y) = x + y
+  and g(x,y) = x * y
+  and h(x,y,a,b) = x(a,b) - y(a,b)
+  in h(f,g,1,2)
+) .
+***> should be int(1) under static scoping
+***> should be undefined under dynamic scoping
+
+red eval(
+  x 1
+) .
+***> should be undefined , x not in scope
+
+red eval(
+  (fun x -> x) x
+) .
+***> should be undefined , x not in scope
+
+red eval(
+  let x = fun x -> x in x x
+) .
+***> should evaluate to a closure 
+
+red eval(
+  let f(x,y) = x y in 
+  let g(x) = x in 
+  f(g,2) 
+) .
+
+red eval(
+  let i = fun x -> x + 1
+  in i 2
+) .
+***> should be int(3) 
+
+red eval(
+  let f(x,y) = x + y in f(1,2) 
+) .
+***> should be int(3) under static scoping
+***> should be undefined under dynamic scoping
+
+red eval(
+  let f() = 10
+  in f()
+) .
+***> should be int(10) 
+
+red eval(
+  let f(x,y) = x + y in f(1,2)
+) .
+***> should be int(3) in static scoping
+***> should be undefined in dynamic scoping
+
+red eval(
+  let f(x,y) = x + y in let x = 6 in f(1,2)
+) .
+***> should be int(3) in static scoping
+***> should be int(8) in dynamic scoping
+ 
+--- different results under dynamic scoping
+red eval(
+  let y = 1
+  in let f x = y
+     in let y = 2
+        in f 0
+) .
+***> should be int(1) under static scoping
+***> should be int(2) under dynamic scoping
+
+red eval(
+  let y = 1
+  in (fun (x,y) -> x y) ((fun x -> y), 2)
+) .
+***> should be int(1) under static scoping
+***> should be undefined under dynamic scoping
+
+
+--- let rec
+
+red eval(
+  let f n = if n == 0
+            then 1
+            else n * f(n - 1)
+  in f 5
+) .
+***> should be undefined under static scoping
+***> should be int(120) under dynamic scoping
+
+red eval(
+  let rec x = 10
+  in x
+) .
+***> should be int(10) 
+
+red eval(
+  let rec x = 10 and
+          f() = x
+  in f()
+) .
+***> should be int(10) 
+
+red eval(
+  let rec f n = if n == 0
+                then 1
+                else n * f(n - 1)
+  in f 5
+) .
+***> should be int(120) 
+
+red eval(
+  let rec f(n,m) = if n == 0
+                  then m
+                  else f ((n - 1), n * m)
+  in f(5,1)
+) .
+***> should be int(120) 
+
+red eval(
+  let rec 'even x = if x == 0 then 1 else  'odd(x - 1)
+  and      'odd x = if x == 0 then 0 else 'even(x - 1)
+  in 'odd 17
+) .
+***> should be int(1) 
+
+red eval(
+  let x = 1
+  in let rec x = 7
+     and     y = x
+     in y
+) .
+***> should be undefined 
+
+--- variable assignment
+
+red eval(
+  let d = x := x + y
+  in let d = y := x - y
+     in let d = x := x - y
+        in 0
+) .
+***> should be undefined 
+
+red eval(
+  let x = 1 and y = 2
+  in let d = x := x + y
+     in let d = y := x - y
+        in let d = x := x - y
+           in 10 * x + y
+) .
+***> should be int(21) 
+
+red eval(
+  let c = 0
+  in let f() = let c = c + 1
+               in c
+     in f() + f()
+) .
+***> should be int(2) 
+
+red eval(
+  let c = 0
+  in let f() = let d = c := c + 1
+               in c
+     in f() + f()
+) .
+***> should be int(3) 
+
+red eval(
+  let f = let c = 0
+          in fun () -> let c = c + 1
+                       in c
+  in f() + f()
+) .
+***> should be int(2) under static scoping
+***> should be undefined under dynamic scoping
+
+red eval(
+  let f = let c = 0
+          in fun () -> let d = c := c + 1
+                       in c
+  in f() + f()
+) .
+***> should be int(3) under static scoping
+***> should be undefined under dynamic scoping
+
+red eval(
+  let x = 0
+  in let f x = let d = x := x + 1
+                in x
+     in f(x) + f(x)
+) .
+***> should be int(2) 
+
+red eval(
+  let x = 1 and y = 2
+  in let f(x,y) = let t = x
+                 in let d = x := y
+                    in let d = y := t
+                       in 0
+     in let d = f(x,y)
+        in 10 * x + y
+) .
+***> should be int(12) under static scoping
+***> should be int(22) under dynamic scoping
+
+red eval(
+  let x = 0 and y = 3 and z = 4 and
+      'cond(a,b,c) = if a == 0 then c else b
+  in 'cond(x,(y / x),z)
+) .
+***> should be undefined 
+
+
+--- lists
+
+red eval(
+  let rec p l =
+    if null?(l) then 1
+    else if car(l) == 0 then 0 else car(l) * (p cdr(l))
+  in p [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 10, 11, 12, 13]
+) .
+***> should be int(0) 
+
+red eval(
+  let rec 'sort l = if null?(l)
+                    then []
+                    else 'insert(car(l), ('sort cdr(l)))
+  and   'insert(x,l) = if null?(l)
+                      then [x]
+                      else if x <= car(l)
+                           then cons(x,l)
+                           else cons(car(l), 'insert(x, cdr(l)))
+  in 'sort [3, 7, 2, 9, 0, 6, -8, 17, -128]
+) .
+***> should be [int(-128),int(-8),int(0),int(2),int(3),int(6),int(7),int(9),int(17)] under static scoping
+***> should be undefined under dynamic scoping
+
+--- blocks
+
+red eval(
+  let x = 1 and y = 2
+  in { 
+       x := x + y ;
+       y := x - y ;
+       x := x - y ;
+       10 * x + y
+     }
+) .
+***> should be int(21) 
+
+red eval(
+  let f x = x + x
+  in let y = 5
+     in {
+          f(let d = y := y + 3 in 1) ;
+          y
+        }
+) .
+***> should be int(8) 
+
+red eval(
+  let y = 5
+  and f x = x + x
+  and g x = let d = x := x + 3 in 1
+  in {
+       f(g(y));
+       y
+     }
+) .
+***> should be int(5) 
+
+red eval(
+  let n = 178378342647 and c = 0
+  in {
+       while not (n == 1) {
+         c := c + 1 ;
+         if n == 2 * (n / 2)
+         then n := n / 2
+         else n := 3 * n + 1
+       } ;
+       c
+     }
+) .
+***> should be int(185) 
+
+red eval(
+  let a = [1, 2, 3, 4]
+  and b = [5, 6, 7, 8]
+  in a
+).
+***> should be [int(1),int(2),int(3),int(4)] 
+
+red eval(
+  let a = 5 and b = 10
+  in
+    let
+      p = fun(x,y) -> {x := x + 10 ; y := y + 10 ; x + y }
+    in
+      {p(a,a) ; p(a,b) ; [a, b]}
+) .
+***> should be [int(5),int(10)]
+
+red eval(
+  let m = fun(f,x) ->
+    if x == 0 then 0 else let b = x - 1 in 4 + f(f,b)
+  in let t = fun x -> m(m,x)
+     in t 3
+) .
+***> should be 12
+
+red eval(
+  let rec t = fun x -> 
+    if x == 0 then 0 else let b = x - 1 in 4 + t b
+  in t 3
+) .
+***> should be 12
+
+red eval(
+  let rec 'perm n = if n == 0
+                    then [[]]
+                    else 'insert(n,'perm (n - 1)) 
+  and     'insert(n,l) = if null?(l)
+                        then []
+                        else 'append('interleave(n, car(l)),'insert(n, cdr(l)))
+  and     'interleave(n,l) = if null?(l)
+                            then [[n]]
+                            else cons(cons(n,l), 'mycons(car(l), 'interleave(n,cdr(l)))) 
+  and     'mycons(x,l) = if null?(l)
+                        then []
+                        else cons(cons(x,car(l)), 'mycons(x, cdr(l)))
+  and     'append(u,v) = if null?(u)
+                        then v
+                        else cons(car(u), 'append(cdr(u), v))
+  in 'perm 3
+) .
+***> should generate all the permutations
+
+***> Ejercicio 2.1
+red eval(
+  let rec 'suma(x,y) =
+    if x >= y then y else x + 'suma(x + 1, y)
+  in 'suma(3,7)
+) .
+
+***> Ejercicio 2.2
+red eval(
+  let 'mayor (x, y) = if x >= y
+                      then x
+                      else y 
+  in 'mayor (100, 1)
+) .
+
+***> Ejercicio 2.3
+red eval(
+  let rec 'facto (x) = if x <= 1 
+                   then 1 
+                   else x * 'facto(x - 1)
+  in 'facto (3)
+) .
+
+***> Ejercicio 3.1
+red eval(
+  let rec 'contList(x,y) = if null?(x)
+                            then 0
+                            else if car(x) == y 
+                              then 1 + 'contList(cdr(x),y)
+                              else 'contList(cdr(x),y)
+  in 'contList([1,2,2,4,5,6,2,2],2)
+) .
+
+***> Ejercicio 3.2
+red eval(
+  let rec 'remList(x,y,z) = if null?(x)
+                            then []
+                            else if car(x) == y 
+                              then cons(z,'remList(cdr(x),y,z))
+                              else cons(car(x),'remList(cdr(x),y,z))
+  in 'remList([1,2,3,4,4,3,4,3],4,7)
+) .
+
+***> Ejercicio 3.3
+red eval(
+  let rec 'extList(x,y) = if null?(x)
+                          then []
+                          else if car(x) >= y 
+                            then 'extList(cdr(x),y)
+                            else cons(car(x),'remList(cdr(x),y))
+  in 'extList([1,2,3,4,6,0,7,5],4)
+) .
+
+***> Ejercicio 5.1
+red eval(
+  let x = 3 and y = 25 and z = 0 and 'swap(x,y,z) = {
+     * z := * y ; * y := * x ; * x := * z ; cons(* x, cons(* y, []))
+  }
+  in 'swap(& x, & y , & z)
+) . 
+
+***> Ejercicio 5.2
+red eval(
+  let m = 9999 and x = 0 in let rec t(m,x,z) = {
+  if null?(z)
+  then cons(* m, cons(* x , []))
+  else { if(car(z)) >= * x
+        then * x := car(z)
+        else if car(z) <= * m
+          then * m := car(z)
+          else car(z) ;
+         t(m,x,cdr(z))
+  }
+  }
+  in t(& m, & x, [1,2,7,4,6,0,9,5])
+) .

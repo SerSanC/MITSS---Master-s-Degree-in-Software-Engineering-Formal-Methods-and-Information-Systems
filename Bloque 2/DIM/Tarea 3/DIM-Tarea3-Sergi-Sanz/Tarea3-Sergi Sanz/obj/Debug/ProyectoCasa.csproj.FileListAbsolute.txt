@@ -1,0 +1,11 @@
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\bin\Debug\REcoSample.exe.config
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\bin\Debug\REcoSample.exe
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\bin\Debug\REcoSample.pdb
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\bin\Debug\WindowsBase.dll
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\obj\Debug\ProyectoCasa.csprojAssemblyReference.cache
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\obj\Debug\REcoSample.Form1.resources
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\obj\Debug\REcoSample.Properties.Resources.resources
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\obj\Debug\ProyectoCasa.csproj.GenerateResource.cache
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\obj\Debug\ProyectoCasa.csproj.CopyComplete
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\obj\Debug\REcoSample.exe
+C:\Users\Sergi\Downloads\DIM-Tarea3-Sergi-Sanz\Tarea3-Sergi Sanz\obj\Debug\REcoSample.pdb

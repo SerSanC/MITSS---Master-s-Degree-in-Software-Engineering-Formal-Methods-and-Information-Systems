@@ -1,0 +1,155 @@
+package autonomouscar.roadtype.monitor;
+
+import java.util.Dictionary;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+import sua.autonomouscar.driving.interfaces.IDrivingService;
+import sua.autonomouscar.driving.interfaces.IL0_ManualDriving;
+import sua.autonomouscar.infrastructure.OSGiUtils;
+import sua.autonomouscar.infrastructure.Thing;
+import sua.autonomouscar.infrastructure.driving.DrivingService;
+import sua.autonomouscar.infrastructure.driving.L2_DrivingService;
+import sua.autonomouscar.interfaces.EDrivingMode;
+import sua.autonomouscar.interfaces.ERoadStatus;
+import sua.autonomouscar.interfaces.ERoadType;
+import sua.autonomouscar.simulation.console.commands.L0_ManualDrivingConfigurator;
+import sua.autonomouscar.simulation.console.commands.L1_AssistedDrivingConfigurator;
+import sua.autonomouscar.simulation.console.commands.L2_AdaptiveCruiseControlConfigurator;
+import sua.autonomouscar.simulation.console.commands.L2_LaneKeepingAssistConfigurator;
+import sua.autonomouscar.simulation.console.commands.L3_CityChaufferConfigurator;
+import sua.autonomouscar.simulation.console.commands.L3_HighwayChaufferConfigurator;
+import sua.autonomouscar.simulation.console.commands.L3_TrafficJamChaufferConfigurator;
+
+public class RoadMonitor implements ServiceListener  {
+	
+	private BundleContext context; // dependencia de la libreria, no tocar nombre
+	private ERoadType previousType = null; // nombre cambiado, ha pasado de typeAnterior a previousType, clase declarada
+											// por prof
+	private ERoadStatus previousStatus = ERoadStatus.FLUID; // Por que se tiene un valor estatico de inicio? clase
+															// declarada por prof. nombre cambiado de statusAnterior a
+															// previousStatus
+	private IDrivingService driving; // Clase creada por el profesor, no tocar
+	
+	
+	
+	public RoadMonitor(BundleContext bundleContext) {
+		this.context = bundleContext;		
+	}
+
+	@Override
+	public void serviceChanged(ServiceEvent event) {
+		// TODO Auto-generated method stub
+		ServiceReference ref = event.getServiceReference();
+		
+		if(event.getType() == ServiceEvent.MODIFIED) 
+		{
+			
+			Dictionary<String,Object> properties = ref.getProperties();			
+			ERoadType roadType = (ERoadType) properties.get("road-type");
+			ERoadStatus roadStatus = (ERoadStatus) properties.get("road-status");
+			this.driving = OSGiUtils.getService(context, IDrivingService.class, String.format("(%s=true)", DrivingService.ACTIVE));
+
+			
+			if (driving == null) 
+			{
+				System.out.println("DrivingService is not found");
+			}
+			else 
+			{
+				String mode = driving.getId();
+				
+				System.out.println("Mode: " + mode.toString());	
+				System.out.println("RoadType: " + roadType.toString());
+				System.out.println("RoadStatus: " + roadStatus.toString());
+				System.out.println("Status Anterior: " + previousStatus);
+				
+				if (IsL3DrivingMode(mode) && (roadType == ERoadType.OFF_ROAD || roadType == ERoadType.STD_ROAD)) {
+					ADS_L3_1();
+				}
+				else if(mode == EDrivingMode.L3_HC && roadType == ERoadType.HIGHWAY && previousStatus == ERoadStatus.FLUID && (roadStatus == ERoadStatus.COLLAPSED 
+						|| roadStatus == ERoadStatus.JAM)){
+					ADS_L3_2();
+				}
+				else if(mode == EDrivingMode.L3_HC && roadType == ERoadType.CITY && roadStatus == ERoadStatus.FLUID ){
+					ADS_L3_3();
+				}
+				else if(mode == EDrivingMode.L3_TJC && roadType == ERoadType.HIGHWAY 
+						&& (previousStatus == ERoadStatus.COLLAPSED || previousStatus == ERoadStatus.JAM) 
+						&& roadStatus ==  ERoadStatus.FLUID) {
+					ADS_L3_4();
+				}
+				else if(mode == EDrivingMode.L3_TJC && previousType == ERoadType.HIGHWAY 
+						&& (roadStatus == ERoadStatus.COLLAPSED || roadStatus == ERoadStatus.JAM) 
+						&& roadType ==  ERoadType.CITY) {
+					ADS_L3_4A();
+				}
+				else if(mode == EDrivingMode.L3_CC && previousType == ERoadType.CITY 
+						&& roadType ==  ERoadType.HIGHWAY) {
+					System.out.println("-----------------Activando ADS_L3-5-----------------");
+					if(roadStatus == ERoadStatus.FLUID) {
+						L3_HighwayChaufferConfigurator.configure(context);
+						L3_HighwayChaufferConfigurator.start(context);
+					}
+					else {
+						L3_TrafficJamChaufferConfigurator.configure(context);
+						L3_TrafficJamChaufferConfigurator.start(context);
+					}
+					
+					
+				}
+				previousStatus = roadStatus;
+				previousType = roadType;
+				System.out.println("----------------------------------------------------");
+			}
+		}
+	}
+	
+	public void ADS_L3_1() {
+		System.out.println("-----------------Activando ADS_L3_1-----------------");
+		try {
+			L2_AdaptiveCruiseControlConfigurator.configure(context);
+			L2_AdaptiveCruiseControlConfigurator.start(context);
+		}
+		catch(Exception ex){
+			L1_AssistedDrivingConfigurator.configure(context);
+			L1_AssistedDrivingConfigurator.start(context);
+		}
+		
+	}
+	
+	public void ADS_L3_2() {
+		System.out.println("-----------------Activando ADS_L3-2-----------------");
+		L3_TrafficJamChaufferConfigurator.configure(context);
+		L3_TrafficJamChaufferConfigurator.start(context);
+	}
+	
+	public void ADS_L3_3() {
+		System.out.println("-----------------Activando ADS_L3-3-----------------");
+		L3_CityChaufferConfigurator.configure(context);
+		L3_CityChaufferConfigurator.start(context);
+	}
+	
+	public void ADS_L3_4() {
+		System.out.println("-----------------Activando ADS_L3-4-----------------");
+		L3_HighwayChaufferConfigurator.configure(context);
+		L3_HighwayChaufferConfigurator.start(context);
+	}
+	
+	public void ADS_L3_4A() {
+		System.out.println("-----------------Activando ADS_L3-4A----------------");
+		L3_CityChaufferConfigurator.configure(context);
+		L3_CityChaufferConfigurator.start(context);
+	}
+	
+	
+	
+	
+	public boolean IsL3DrivingMode(String mode) {
+		return mode == EDrivingMode.L3_CC || mode == EDrivingMode.L3_HC || mode == EDrivingMode.L3_TJC;
+	}
+	
+
+}
